@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "566371582218",
+    "firebase_url": "https://secondserving-ef1f1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "secondserving-ef1f1",
+    "storage_bucket": "secondserving-ef1f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566371582218:android:979bc5d1d44a5e4c967af3",
+        "android_client_info": {
+          "package_name": "com.example.secondserving"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566371582218-dn1vq2dib4udb3jtmnkftmi3u1g353a4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSE-UAl4xNmb6Fk7y4ey2h6ayyeHQu2kw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566371582218-dn1vq2dib4udb3jtmnkftmi3u1g353a4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
