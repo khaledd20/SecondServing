@@ -35,6 +35,10 @@ class FirebaseAuthService {
         email: email,
         password: password,
       );
+
+      // Send email verification
+      await userCredential.user!.sendEmailVerification();
+
       return userCredential.user!.uid;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -51,3 +55,5 @@ class FirebaseAuthService {
     await _firebaseAuth.signOut();
   }
 }
+
+
