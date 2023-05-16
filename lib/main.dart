@@ -28,19 +28,16 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final firebaseAuth = FirebaseAuthService();
+
   void _login(BuildContext context) async {
     String username = _usernameController.text;
     String password = _passwordController.text;
 
-    // TODO: Add login functionality
-    // You can add your login logic here
-    // For example, you can validate the username and password
-    // against a stored list of credentials or an API.
     firebaseAuth.signInWithEmailAndPassword(username, password).then((value) {
       final snackBar = SnackBar(content: Text(value.toString()));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     });
-    // Assuming login is successful, navigate to the profile screen
+
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         print('User is currently signed out!');
@@ -65,6 +62,26 @@ class LoginScreen extends StatelessWidget {
       context,
       MaterialPageRoute(builder: (context) => RegisterScreen()),
     );
+  }
+
+  void _forgotPassword(BuildContext context) async {
+    String username = _usernameController.text;
+    if (username.isNotEmpty) {
+      FirebaseAuth.instance.sendPasswordResetEmail(email: username)
+          .then((value) {
+        final snackBar = SnackBar(
+            content: Text(
+                'Password reset email sent. Please check your email inbox.'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }).catchError((error) {
+        final snackBar = SnackBar(content: Text(error.toString()));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      });
+    } else {
+      final snackBar = SnackBar(
+          content: Text('Please enter your email address to reset password'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override
@@ -105,6 +122,11 @@ class LoginScreen extends StatelessWidget {
             TextButton(
               onPressed: () => _navigateToRegisterScreen(context),
               child: Text('Register'),
+            ),
+            const SizedBox(height: 16.0),
+            TextButton(
+              onPressed: () => _forgotPassword(context),
+              child: Text('Forgot Password'),
             ),
           ],
         ),
