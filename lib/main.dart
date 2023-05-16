@@ -3,8 +3,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'profile_screen.dart';
-import 'register_screen.dart';
+import 'views/profile_screen.dart';
+import 'views/register_screen.dart';
 import 'services/firebase_auth_service.dart';
 
 void main() async {

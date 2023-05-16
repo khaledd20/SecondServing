@@ -1,7 +1,10 @@
 //register_screen.dart
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'services/firebase_auth_service.dart';
+
+import '../services/firebase_auth_service.dart';
+
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class RegisterScreen extends StatefulWidget {
@@ -68,6 +71,7 @@ Future<void> signUp(String email, String password, String name, String phone) as
 
 
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,6 +108,7 @@ Future<void> signUp(String email, String password, String name, String phone) as
               ),
             ),
             const SizedBox(height: 16.0),
+
             TextField(
               controller: _phoneNumberController, // Add the phone number controller to the TextField
               keyboardType: TextInputType.number, // Limit the input to numbers only
@@ -113,6 +118,7 @@ Future<void> signUp(String email, String password, String name, String phone) as
               ),
             ),
             const SizedBox(height: 16.0),
+
             ElevatedButton(
               onPressed: () => _register(context),
               child: Text('Register'),
