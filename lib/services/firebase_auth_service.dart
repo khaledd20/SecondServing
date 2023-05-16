@@ -42,11 +42,11 @@ class FirebaseAuthService {
       return userCredential.user!.uid;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        return 'The password provided is too weak.';
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        return 'The account already exists for that email.';
       }
-      return e.message;
+      return 'Something went wrong';
     }
   }
 
@@ -55,5 +55,3 @@ class FirebaseAuthService {
     await _firebaseAuth.signOut();
   }
 }
-
-
