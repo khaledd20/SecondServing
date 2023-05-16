@@ -39,7 +39,7 @@ class FirebaseAuthService {
       // Send email verification
       await userCredential.user!.sendEmailVerification();
 
-      return userCredential.user!.uid;
+      return "Signed up successfully!";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         return 'The password provided is too weak.';
