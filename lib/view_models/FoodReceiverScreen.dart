@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../views/profile_screen.dart';
+class Meal {
+  final String name;
+  final String description;
+  final String location;
+  final String photo;
+
+  Meal({
+    required this.name,
+    required this.description,
+    required this.location,
+    required this.photo,
+  });
+}
 
 class FoodReceiverScreen extends StatefulWidget {
+  const FoodReceiverScreen({Key? key}) : super(key: key);
+
   @override
   _FoodReceiverScreenState createState() => _FoodReceiverScreenState();
 }
@@ -12,75 +27,58 @@ class _FoodReceiverScreenState extends State<FoodReceiverScreen> {
   final User? user = FirebaseAuth.instance.currentUser;
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
-  late TextEditingController _searchController;
-  String? _searchTerm;
-  String? _locationFilter;
+  
+  List<Meal> _meals = [];
 
   @override
   void initState() {
     super.initState();
-    _searchController = TextEditingController();
+    _fetchMeals();
   }
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
+  Future<void> _fetchMeals() async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance.collection('meals').get();
+      final List<Meal> meals = snapshot.docs.map((doc) {
+        final data = doc.data();
+        return Meal(
+          name: data['name'] ?? '',
+          description: data['description'] ?? '',
+          location: data['location'] ?? '',
+          photo: data['photo'] ?? '',
+        );
+      }).toList();
+
+      setState(() {
+        _meals = meals;
+      });
+    } catch (e) {
+      print('Error fetching meals: $e');
+    }
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> foodList = [
-      {
-    'name': 'Pizza',
-    'photo': 'assets/images/pizza.jpg',
-    'distance': '2 km away',
-  },
-  {
-    'name': 'Burger',
-    'photo': 'assets/images/burger.jpg',
-    'distance': '3 km away',
-  },
-  {
-    'name': 'Sushi',
-    'photo': 'assets/images/sushi.jpg',
-    'distance': '1 km away',
-  },
-  {
-    'name': 'Pasta',
-    'photo': 'assets/images/pasta.jpg',
-    'distance': '4 km away',
-  },
-    ];
-
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Food Receiver'),
-            TextButton(
-              onPressed: () {
-                // TODO: Implement history functionality
-              },
-              child: Text(
-                'History',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.green,
+        title: const Text('Find Food Nearby'),
+        backgroundColor: Colors.green, // Set the app bar color to green
+        actions: [
+          IconButton(
+            icon: Icon(Icons.history),
+            onPressed: () {
+              // TODO: Implement history button functionality
+            },
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: Colors.green, // Set the drawer header color to green
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,38 +143,61 @@ class _FoodReceiverScreenState extends State<FoodReceiverScreen> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: foodList.length,
-              itemBuilder: (context, index) {
-                final food = foodList[index];
-                final name = food['name'];
-                final photo = food['photo'];
-                final distance = food['distance'];
-
-                return ListTile(
-                  leading: Image.asset(
-                    photo,
-                    width: 100,
-                    height: 100,
-                    ),
-                  title: Text(name),
-                  subtitle: Text(distance),
-                );
-              },
+      body: ListView.builder(
+        itemCount: _meals.length,
+        itemBuilder: (context, index) {
+          final meal = _meals[index];
+          return Card(
+            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ListTile(
+              contentPadding: EdgeInsets.all(16),
+              leading: SizedBox(
+                width: 80,
+                height: 80,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    meal.photo,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              title: Text(
+                meal.name,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 8),
+                  Text(
+                    'Location: ${meal.location}',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    meal.description,
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // TODO: Implement plus button functionality
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.green, // Set the floating action button color to green
       ),
     );
   }
+}
+
+void main() {
+  runApp(const MaterialApp(
+    home: FoodReceiverScreen(),
+  ));
 }
