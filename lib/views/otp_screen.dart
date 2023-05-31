@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '/main.dart';
+import '/main.dart'; // Replace with the appropriate screen import
 
 class OtpScreen extends StatefulWidget {
   final String verificationId;
@@ -24,24 +24,18 @@ class _OtpScreenState extends State<OtpScreen> {
 
     try {
       // Sign in with the provided phone authentication credential
-      final UserCredential userCredential = await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+      await _firebaseAuth.signInWithCredential(phoneAuthCredential);
 
       // OTP verification successful, navigate to the main screen
-      if (userCredential.user != null && userCredential.user!.emailVerified) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-          (route) => false,
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Email verification is required.')),
-        );
-      }
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()), // Replace with the appropriate screen
+        (route) => false,
+      );
     } on FirebaseAuthException catch (e) {
       // Show error message if OTP verification fails
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? 'OTP verification failed.')),
+        SnackBar(content: Text('OTP verification failed. Please try again.')),
       );
     }
   }
